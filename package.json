@@ -1,0 +1,43 @@
+{
+  "name": "write-file-atomically",
+  "version": "0.1.0",
+  "description": "Promisified version of write-file-atomic",
+  "repository": "shinnn/write-file-atomically",
+  "author": "Shinnosuke Watanabe (https://github.com/shinnn)",
+  "scripts": {
+    "pretest": "eslint --config @shinnn/node index.js test.js",
+    "test": "node --strong_mode --throw-deprecation --track-heap-objects test.js",
+    "coverage": "node --strong_mode node_modules/.bin/istanbul cover test.js"
+  },
+  "license": "MIT",
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "write",
+    "output",
+    "create",
+    "fs",
+    "file",
+    "atomic",
+    "atomically",
+    "files",
+    "async",
+    "asynchronous",
+    "asynchronously",
+    "promise",
+    "then"
+  ],
+  "dependencies": {
+    "pinkie-promise": "^2.0.0",
+    "write-file-atomic": "^1.1.4"
+  },
+  "devDependencies": {
+    "@shinnn/eslint-config-node": "^2.0.0",
+    "eslint": "^2.2.0",
+    "graceful-fs": "^4.1.3",
+    "istanbul": "^0.4.2",
+    "rimraf": "^2.5.2",
+    "tape": "^4.4.0"
+  }
+}

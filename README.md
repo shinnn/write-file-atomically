@@ -3,8 +3,8 @@
 [![NPM version](https://img.shields.io/npm/v/write-file-atomically.svg)](https://www.npmjs.com/package/write-file-atomically)
 [![Build Status](https://travis-ci.org/shinnn/write-file-atomically.svg?branch=master)](https://travis-ci.org/shinnn/write-file-atomically)
 [![Coverage Status](https://img.shields.io/coveralls/shinnn/write-file-atomically.svg)](https://coveralls.io/github/shinnn/write-file-atomically?branch=master)
-[![Dependency Status](https://david-dm.org/shinnn/write-file-atomically.svg)](https://david-dm.org/shinnn/write-file-atomically)
-[![devDependency Status](https://david-dm.org/shinnn/write-file-atomically/dev-status.svg)](https://david-dm.org/shinnn/write-file-atomically#info=devDependencies)
+[![dependencies Status](https://david-dm.org/shinnn/write-file-atomically/status.svg)](https://david-dm.org/shinnn/write-file-atomically)
+[![devDependencies Status](https://david-dm.org/shinnn/write-file-atomically/dev-status.svg)](https://david-dm.org/shinnn/write-file-atomically?type=dev)
 
 [Promisified](https://promise-nuggets.github.io/articles/07-wrapping-callback-functions.html) version of [write-file-atomic](https://github.com/npm/write-file-atomic):
 

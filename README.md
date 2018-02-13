@@ -1,27 +1,26 @@
 # write-file-atomically
 
-[![NPM version](https://img.shields.io/npm/v/write-file-atomically.svg)](https://www.npmjs.com/package/write-file-atomically)
+[![npm version](https://img.shields.io/npm/v/write-file-atomically.svg)](https://www.npmjs.com/package/write-file-atomically)
 [![Build Status](https://travis-ci.org/shinnn/write-file-atomically.svg?branch=master)](https://travis-ci.org/shinnn/write-file-atomically)
 [![Coverage Status](https://img.shields.io/coveralls/shinnn/write-file-atomically.svg)](https://coveralls.io/github/shinnn/write-file-atomically?branch=master)
-[![dependencies Status](https://david-dm.org/shinnn/write-file-atomically/status.svg)](https://david-dm.org/shinnn/write-file-atomically)
-[![devDependencies Status](https://david-dm.org/shinnn/write-file-atomically/dev-status.svg)](https://david-dm.org/shinnn/write-file-atomically?type=dev)
 
 [Promisified](https://promise-nuggets.github.io/articles/07-wrapping-callback-functions.html) version of [write-file-atomic](https://github.com/npm/write-file-atomic):
 
-> Write files in an atomic fashion w/configurable ownership
+> an extension for node's `fs.writeFile` that makes its operation atomic and allows you set ownership (uid/gid of the file)
 
 ```javascript
-const fs = require('fs');
+const {readFileSync} = require('fs');
 const writeFileAtomically = require('write-file-atomically');
 
-writeFileAtomically('file.txt', 'Hi!').then(() => {
-  fs.readFileSync('file.txt', 'utf8'); //=> 'Hi!' 
-});
+(async () => {
+  await writeFileAtomically('file.txt', 'Hi!');
+  readFileSync('file.txt', 'utf8'); //=> 'Hi!'
+})();
 ```
 
 ## Installation
 
-[Use npm.](https://docs.npmjs.com/cli/install)
+[Use](https://docs.npmjs.com/cli/install) [npm](https://docs.npmjs.com/getting-started/what-is-npm).
 
 ```
 npm install write-file-atomically
@@ -35,21 +34,15 @@ const writeFileAtomically = require('write-file-atomically');
 
 ### writeFileAtomically(*filename*, *data* [, *options*])
 
-*filename*: `String` (a file path where the file to be written)  
-*data*: `String` or `Buffer` (file contents)  
-*options*: `Object` or `String` (directly used as [`write-file-atomic` options](https://github.com/npm/write-file-atomic#var-writefileatomic--requirewrite-file-atomicwritefileatomicfilename-data-options-callback))  
-Return: [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise) instance
+*filename*: `string` (a file path where the file to be written)  
+*data*: `string` or `Buffer` (file contents)  
+*options*: `Object` or `string` (directly used as [`write-file-atomic` options](https://github.com/npm/write-file-atomic#var-writefileatomic--requirewrite-file-atomicwritefileatomicfilename-data-options-callback))  
+Return: `Promise`
 
-It writes data to the given file path with returning a [promise](https://promisesaplus.com/). The promise will be [*fulfilled*](https://promisesaplus.com/#point-26) with no value if successful, otherwise [*rejected*](https://promisesaplus.com/#point-30) with an error.
+It asynchronously writes data to the given file path in an atomic manner:
 
-```javascript
-writeFileAtomically(__dirname, '123', {encoding: 'base64'}).catch(err => {
-  err.code; //=> 'EISDIR'
-});
-```
+> The file is initially named `filename + "." + murmurhex(__filename, process.pid, ++invocations)`. If writeFile completes successfully then, if passed the **chown** option it will change the ownership of the file. Finally it renames the file back to the filename you specified.
 
 ## License
 
-Copyright (c) 2016 [Shinnosuke Watanabe](https://github.com/shinnn)
-
-Licensed under [the MIT License](./LICENSE).
+[ISC License](./LICENSE) © 2018 Shinnosuke Watanabe

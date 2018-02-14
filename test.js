@@ -1,48 +1,89 @@
 'use strict';
 
-const assert = require('assert');
+const {promisify} = require('util');
 
-const fs = require('graceful-fs');
-const rimraf = require('rimraf');
+const {readFile} = require('graceful-fs');
+const rmfr = require('rmfr');
 const test = require('tape');
 const writeFileAtomically = require('.');
 
+const promisifiedReadFile = promisify(readFile);
+
 test('writeFileAtomically()', t => {
-  t.plan(7);
+	t.plan(4);
+	t.on('end', async () => rmfr('tmp*', {glob: true}));
 
-  t.strictEqual(writeFileAtomically.name, 'writeFileAtomically', 'should have a function name.');
+	(async () => {
+		const filename = 'tmp_0.txt';
 
-  writeFileAtomically('tmp_0.txt', new Buffer('foo')).then(() => {
-    t.strictEqual(fs.readFileSync('tmp_0.txt', 'utf8'), 'foo', 'should write a file.');
-  }).catch(t.fail);
+		await writeFileAtomically(filename, Buffer.from('foo'));
+		t.equal(
+			await promisifiedReadFile(filename, 'utf8'),
+			'foo',
+			'should write a file.'
+		);
+	})();
 
-  writeFileAtomically('tmp_1.txt', 'a0', {encoding: 'hex'}).then(() => {
-    t.strictEqual(fs.readFileSync('tmp_1.txt', 'hex'), 'a0', 'should support write-file-atomic options.');
-  }).catch(t.fail);
+	(async () => {
+		const filename = 'tmp_1.txt';
 
-  writeFileAtomically('tmp_2.txt', 'a0', 'hex').then(() => {
-    t.strictEqual(fs.readFileSync('tmp_2.txt', 'hex'), 'a0', 'should accept a string as its third argument.');
-  }).catch(t.fail);
+		await writeFileAtomically(filename, 'a0', {encoding: 'hex'});
+		t.equal(
+			await promisifiedReadFile(filename, 'hex'),
+			'a0',
+			'should support write-file-atomic options.'
+		);
+	})();
 
-  writeFileAtomically(__dirname, '').then(t.fail, err => {
-    t.strictEqual(err.code, 'EISDIR', 'should fail when it cannot write a file.');
-  });
+	/*
+	(async () => {
+		const filename = 'tmp_2.txt';
 
-  writeFileAtomically(1, '').then(t.fail, err => {
-    t.strictEqual(
-      err.message,
-      '1 is not a string. Expected a file path to write data.',
-      'should fail when the first argument is not a string.'
-    );
-  });
+		await writeFileAtomically(filename, 'a0', 'hex');
+		t.equal(
+			await promisifiedReadFile(filename, 'hex'),
+			'a0',
+			'should accept a string as its third argument.'
+		);
+	})();
+	*/
 
-  writeFileAtomically('tmp_3.txt', '', '123').then(t.fail, err => {
-    t.strictEqual(
-      err.message,
-      'Unknown encoding: 123',
-      'should fail when it takes an invalid encoding.'
-    );
-  });
+	const fail = t.fail.bind(t, 'Unexpectedly succceeded.');
 
-  t.on('end', () => rimraf('tmp*', assert.ifError));
+	(async () => {
+		try {
+			await writeFileAtomically(__dirname, '');
+			fail();
+		} catch ({code}) {
+			t.equal(code, 'EISDIR', 'should fail when it cannot write a file.');
+		}
+	})();
+
+	(async () => {
+		try {
+			await writeFileAtomically(1, '');
+			fail();
+		} catch (err) {
+			t.equal(
+				err.toString(),
+				'TypeError: 1 is not a string. Expected a file path to write data.',
+				'should fail when it takes a non-string path.'
+			);
+		}
+	})();
+
+	/*
+	(async () => {
+		try {
+			await writeFileAtomically('tmp_3.txt', '', '123');
+			fail();
+		} catch ({message}) {
+			t.equal(
+				message,
+				'Unknown encoding: 123',
+				'should fail when it takes an invalid encoding.'
+			);
+		}
+	})();
+	*/
 });

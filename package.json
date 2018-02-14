@@ -1,42 +1,44 @@
 {
-  "name": "write-file-atomically",
-  "version": "1.0.0",
-  "description": "Promisified version of write-file-atomic",
-  "repository": "shinnn/write-file-atomically",
-  "author": "Shinnosuke Watanabe (https://github.com/shinnn)",
-  "scripts": {
-    "pretest": "eslint --config @shinnn/node index.js test.js",
-    "test": "node --throw-deprecation --track-heap-objects test.js",
-    "coverage": "istanbul cover test.js"
-  },
-  "license": "ISC",
-  "files": [
-    "index.js"
-  ],
-  "keywords": [
-    "write",
-    "output",
-    "create",
-    "fs",
-    "file",
-    "atomic",
-    "atomically",
-    "files",
-    "async",
-    "asynchronous",
-    "asynchronously",
-    "promise",
-    "then"
-  ],
-  "dependencies": {
-    "write-file-atomic": "^1.1.4"
-  },
-  "devDependencies": {
-    "@shinnn/eslint-config-node": "^3.0.0",
-    "eslint": "^3.1.1",
-    "graceful-fs": "^4.1.5",
-    "istanbul": "^0.4.4",
-    "rimraf": "^2.5.4",
-    "tape": "^4.6.0"
-  }
+	"name": "write-file-atomically",
+	"version": "1.0.0",
+	"description": "Promisified version of write-file-atomic",
+	"repository": "shinnn/write-file-atomically",
+	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
+	"scripts": {
+		"pretest": "eslint --fix --format=codeframe .",
+		"test": "nyc --reporter=html --reporter=text node test.js"
+	},
+	"license": "ISC",
+	"files": [
+		"index.js"
+	],
+	"keywords": [
+		"write",
+		"output",
+		"create",
+		"fs",
+		"file",
+		"atomic",
+		"atomically",
+		"files",
+		"async",
+		"asynchronous",
+		"asynchronously",
+		"promise",
+		"then"
+	],
+	"dependencies": {
+		"write-file-atomic": "^2.3.0"
+	},
+	"devDependencies": {
+		"@shinnn/eslint-config-node": "^5.0.0",
+		"eslint": "^4.17.0",
+		"graceful-fs": "^4.1.11",
+		"nyc": "^11.5.0",
+		"rmfr": "^2.0.0-3",
+		"tape": "^4.8.0"
+	},
+	"eslintConfig": {
+		"extends": "@shinnn/node"
+	}
 }

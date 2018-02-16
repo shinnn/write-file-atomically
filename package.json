@@ -28,6 +28,8 @@
 		"then"
 	],
 	"dependencies": {
+		"inspect-with-kind": "^1.0.4",
+		"is-plain-obj": "^1.1.0",
 		"write-file-atomic": "^2.3.0"
 	},
 	"devDependencies": {

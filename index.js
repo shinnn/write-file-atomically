@@ -1,6 +1,6 @@
 'use strict';
 
-const inspect = require('util').inspect;
+const {inspect} = require('util');
 
 const writeFileAtomic = require('write-file-atomic');
 const inspectWithKind = require('inspect-with-kind');
@@ -9,9 +9,22 @@ const isPlainObj = require('is-plain-obj');
 const OPTIONS_SPEC = 'Expected the third argument to be a `write-file-atomic` option (plain <Object>) or a valid encoding (<string>)';
 const ENCODING_OPTION_SPEC = 'Expected `encoding` option to be a valid encoding (<string>)';
 
-module.exports = function writeFileAtomically(filename, data, options) {
+module.exports = function writeFileAtomically(...args) {
+	const argLen = args.length;
+
+	if (argLen !== 2 && argLen !== 3) {
+		return Promise.reject(new RangeError(`Expected 2 or 3 arguments (path: <string>, data: <string|Buffer|Uint8Array>[, options: <Object|string>]), but got ${
+			argLen === 0 ? 'no' : argLen
+		} arguments.`));
+	}
+
+	const [filename, data] = args;
+	let options = args[2];
+
 	if (typeof filename !== 'string') {
-		return Promise.reject(new TypeError(`${String(filename)} is not a string. Expected a file path to write data.`));
+		return Promise.reject(new TypeError(`Expected a file path (<string>) to write data, but got a non-string value ${
+			inspectWithKind(filename)
+		}.`));
 	}
 
 	if (typeof options === 'string') {
@@ -28,7 +41,7 @@ module.exports = function writeFileAtomically(filename, data, options) {
 		}
 
 		options = {encoding: options};
-	} else if (options) {
+	} else if (argLen === 3) {
 		if (!isPlainObj(options)) {
 			const err = new TypeError(`${OPTIONS_SPEC}, but got ${inspectWithKind(options)}.`);
 			err.code = 'ERR_INVALID_ARG_TYPE';
@@ -36,7 +49,7 @@ module.exports = function writeFileAtomically(filename, data, options) {
 			return Promise.reject(err);
 		}
 
-		const encoding = options.encoding;
+		const {encoding} = options;
 
 		if (encoding === '') {
 			const err = new Error(`${ENCODING_OPTION_SPEC}, but got an empty string.`);
@@ -64,8 +77,8 @@ module.exports = function writeFileAtomically(filename, data, options) {
 		}
 	}
 
-	return new Promise(function executor(resolve, reject) {
-		writeFileAtomic(filename, data, options, function writeFileAtomicCallback(err) {
+	return new Promise((resolve, reject) => {
+		writeFileAtomic(filename, data, options, err => {
 			if (err) {
 				reject(err);
 				return;

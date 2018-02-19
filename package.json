@@ -1,6 +1,6 @@
 {
 	"name": "write-file-atomically",
-	"version": "2.0.0-1",
+	"version": "2.0.0-2",
 	"description": "Promisified version of write-file-atomic",
 	"repository": "shinnn/write-file-atomically",
 	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
@@ -38,7 +38,7 @@
 		"graceful-fs": "^4.1.11",
 		"nyc": "^11.5.0",
 		"rmfr": "^2.0.0-3",
-		"tape": "^4.8.0"
+		"tape": "^4.9.0"
 	},
 	"eslintConfig": {
 		"extends": "@shinnn/node"

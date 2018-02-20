@@ -9,22 +9,22 @@ const isPlainObj = require('is-plain-obj');
 const OPTIONS_SPEC = 'Expected the third argument to be a `write-file-atomic` option (plain <Object>) or a valid encoding (<string>)';
 const ENCODING_OPTION_SPEC = 'Expected `encoding` option to be a valid encoding (<string>)';
 
-module.exports = function writeFileAtomically(...args) {
+module.exports = async function writeFileAtomically(...args) {
 	const argLen = args.length;
 
 	if (argLen !== 2 && argLen !== 3) {
-		return Promise.reject(new RangeError(`Expected 2 or 3 arguments (path: <string>, data: <string|Buffer|Uint8Array>[, options: <Object|string>]), but got ${
+		throw new RangeError(`Expected 2 or 3 arguments (path: <string>, data: <string|Buffer|Uint8Array>[, options: <Object|string>]), but got ${
 			argLen === 0 ? 'no' : argLen
-		} arguments.`));
+		} arguments.`);
 	}
 
 	const [filename, data] = args;
 	let options = args[2];
 
 	if (typeof filename !== 'string') {
-		return Promise.reject(new TypeError(`Expected a file path (<string>) to write data, but got a non-string value ${
+		throw new TypeError(`Expected a file path (<string>) to write data, but got a non-string value ${
 			inspectWithKind(filename)
-		}.`));
+		}.`);
 	}
 
 	if (typeof options === 'string') {
@@ -32,12 +32,12 @@ module.exports = function writeFileAtomically(...args) {
 			const err = new Error(`${OPTIONS_SPEC}, but got an empty string.`);
 			err.code = 'ERR_INVALID_ARG_VALUE';
 
-			return Promise.reject(err);
+			throw err;
 		} else if (!Buffer.isEncoding(options)) {
 			const err = new Error(`${OPTIONS_SPEC}, but got an invalid encoding string ${inspect(options)}.`);
 			err.code = 'ERR_UNKNOWN_ENCODING';
 
-			return Promise.reject(err);
+			throw err;
 		}
 
 		options = {encoding: options};
@@ -46,7 +46,7 @@ module.exports = function writeFileAtomically(...args) {
 			const err = new TypeError(`${OPTIONS_SPEC}, but got ${inspectWithKind(options)}.`);
 			err.code = 'ERR_INVALID_ARG_TYPE';
 
-			return Promise.reject(err);
+			throw err;
 		}
 
 		const {encoding} = options;
@@ -55,7 +55,7 @@ module.exports = function writeFileAtomically(...args) {
 			const err = new Error(`${ENCODING_OPTION_SPEC}, but got an empty string.`);
 			err.code = 'ERR_INVALID_OPT_VALUE_ENCODING';
 
-			return Promise.reject(err);
+			throw err;
 		}
 
 		if (typeof encoding !== 'string') {
@@ -64,7 +64,7 @@ module.exports = function writeFileAtomically(...args) {
 			}.`);
 			err.code = 'ERR_INVALID_OPT_VALUE_ENCODING';
 
-			return Promise.reject(err);
+			throw err;
 		}
 
 		if (!Buffer.isEncoding(encoding)) {
@@ -73,7 +73,7 @@ module.exports = function writeFileAtomically(...args) {
 			}.`);
 			err.code = 'ERR_INVALID_OPT_VALUE_ENCODING';
 
-			return Promise.reject(err);
+			throw err;
 		}
 	}
 

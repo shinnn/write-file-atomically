@@ -1,6 +1,6 @@
 'use strict';
 
-const {inspect} = require('util');
+const {inspect, promisify} = require('util');
 
 const writeFileAtomic = require('write-file-atomic');
 const inspectWithKind = require('inspect-with-kind');
@@ -8,6 +8,7 @@ const isPlainObj = require('is-plain-obj');
 
 const OPTIONS_SPEC = 'Expected the third argument to be a `write-file-atomic` option (plain <Object>) or a valid encoding (<string>)';
 const ENCODING_OPTION_SPEC = 'Expected `encoding` option to be a valid encoding (<string>)';
+const promisifiedWriteFileAtomic = promisify(writeFileAtomic);
 
 module.exports = async function writeFileAtomically(...args) {
 	const argLen = args.length;
@@ -18,14 +19,15 @@ module.exports = async function writeFileAtomically(...args) {
 		} arguments.`);
 	}
 
-	const [filename, data] = args;
-	let options = args[2];
+	const [filename] = args;
 
 	if (typeof filename !== 'string') {
 		throw new TypeError(`Expected a file path (<string>) to write data, but got a non-string value ${
 			inspectWithKind(filename)
 		}.`);
 	}
+
+	const options = args[2];
 
 	if (typeof options === 'string') {
 		if (options.length === 0) {
@@ -40,7 +42,7 @@ module.exports = async function writeFileAtomically(...args) {
 			throw err;
 		}
 
-		options = {encoding: options};
+		args[2] = {encoding: options};
 	} else if (argLen === 3) {
 		if (!isPlainObj(options)) {
 			const err = new TypeError(`${OPTIONS_SPEC}, but got ${inspectWithKind(options)}.`);
@@ -77,14 +79,5 @@ module.exports = async function writeFileAtomically(...args) {
 		}
 	}
 
-	return new Promise((resolve, reject) => {
-		writeFileAtomic(filename, data, options, err => {
-			if (err) {
-				reject(err);
-				return;
-			}
-
-			resolve();
-		});
-	});
+	return promisifiedWriteFileAtomic(...args);
 };

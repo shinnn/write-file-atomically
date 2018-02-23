@@ -1,6 +1,6 @@
 {
 	"name": "write-file-atomically",
-	"version": "2.0.0-3",
+	"version": "2.0.0-4",
 	"description": "Promisified version of write-file-atomic",
 	"repository": "shinnn/write-file-atomically",
 	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",

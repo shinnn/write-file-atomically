@@ -1,7 +1,10 @@
 'use strict';
 
+const {join} = require('path');
 const {promisify} = require('util');
+const {URL} = require('url');
 
+const fileUrl = require('file-url');
 const {readFile} = require('graceful-fs');
 const rmfr = require('rmfr');
 const test = require('tape');
@@ -25,7 +28,7 @@ test('writeFileAtomically()', async t => {
 	})();
 
 	(async () => {
-		const filename = 'tmp_1.txt';
+		const filename = Buffer.from('tmp_1.txt');
 
 		await writeFileAtomically(filename, 'a0', {encoding: 'hex'});
 		t.equal(
@@ -36,7 +39,7 @@ test('writeFileAtomically()', async t => {
 	})();
 
 	(async () => {
-		const filename = 'tmp_2.txt';
+		const filename = new URL(`${fileUrl(join(__dirname, 'tmp_2.txt'))}?query_params=should_be_ignored`);
 
 		await writeFileAtomically(filename, 'a0', 'hex');
 		t.equal(
@@ -63,7 +66,7 @@ test('writeFileAtomically()', async t => {
 	} catch (err) {
 		t.equal(
 			err.toString(),
-			'TypeError: Expected a file path (<string>) to write data, but got a non-string value 1 (number).',
+			'TypeError: Expected a file path (<string|Buffer|URL>) to write data, but got an invalid value 1 (number).',
 			'should fail when it takes a non-string path.'
 		);
 	}

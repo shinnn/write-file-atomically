@@ -1,10 +1,12 @@
 'use strict';
 
 const {inspect, promisify} = require('util');
+const {URL} = require('url');
 
-const writeFileAtomic = require('write-file-atomic');
 const inspectWithKind = require('inspect-with-kind');
 const isPlainObj = require('is-plain-obj');
+const fileUriToPath = require('file-uri-to-path');
+const writeFileAtomic = require('write-file-atomic');
 
 const OPTIONS_SPEC = 'Expected the third argument to be a `write-file-atomic` option (plain <Object>) or a valid encoding (<string>)';
 const ENCODING_OPTION_SPEC = 'Expected `encoding` option to be a valid encoding (<string>)';
@@ -19,11 +21,14 @@ module.exports = async function writeFileAtomically(...args) {
 		} arguments.`);
 	}
 
-	const [filename] = args;
-
-	if (typeof filename !== 'string') {
-		throw new TypeError(`Expected a file path (<string>) to write data, but got a non-string value ${
-			inspectWithKind(filename)
+	if (args[0] instanceof URL) {
+		args[0].search = '';
+		args[0] = fileUriToPath(args[0].toString());
+	} else if (Buffer.isBuffer(args[0])) {
+		args[0] = args[0].toString();
+	} else if (typeof args[0] !== 'string') {
+		throw new TypeError(`Expected a file path (<string|Buffer|URL>) to write data, but got an invalid value ${
+			inspectWithKind(args[0])
 		}.`);
 	}
 

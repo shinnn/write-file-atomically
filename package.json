@@ -28,6 +28,7 @@
 		"then"
 	],
 	"dependencies": {
+		"file-uri-to-path": "^1.0.0",
 		"inspect-with-kind": "^1.0.4",
 		"is-plain-obj": "^1.1.0",
 		"write-file-atomic": "^2.3.0"
@@ -35,6 +36,7 @@
 	"devDependencies": {
 		"@shinnn/eslint-config-node": "^5.0.0",
 		"eslint": "^4.18.1",
+		"file-url": "^2.0.2",
 		"graceful-fs": "^4.1.11",
 		"nyc": "^11.5.0",
 		"rmfr": "^2.0.0-3",

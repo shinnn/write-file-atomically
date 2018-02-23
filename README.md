@@ -34,12 +34,12 @@ const writeFileAtomically = require('write-file-atomically');
 
 ### writeFileAtomically(*filename*, *data* [, *options*])
 
-*filename*: `string` (a file path where the file to be written)  
+*filename*: `string`, `Buffer` or [`URL`](https://nodejs.org/api/url.html#url_class_url) (a file path where the file to be written)  
 *data*: `string` or `Buffer` (file contents)  
 *options*: `Object` or `string` (directly used as [`write-file-atomic` options](https://github.com/npm/write-file-atomic#var-writefileatomic--requirewrite-file-atomicwritefileatomicfilename-data-options-callback))  
 Return: `Promise`
 
-It asynchronously writes data to the given file path in an atomic manner:
+It asynchronously writes data to the given file path in an [atomic manner](https://www.npmjs.com/package/write-file-atomic#var-writefileatomic--requirewrite-file-atomic-writefileatomicfilename-data-options-callback):
 
 > The file is initially named `filename + "." + murmurhex(__filename, process.pid, ++invocations)`. If writeFile completes successfully then, if passed the **chown** option it will change the ownership of the file. Finally it renames the file back to the filename you specified.
 
